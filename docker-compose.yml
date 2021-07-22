@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+        dbms:
+                container_name: dbms
+                image: mysql:latest
+                restart: always
+                environment:
+                        MYSQL_USER: 'dvwa'
+                        MYSQL_PASSWORD: 'dvwa'
+                        MYSQL_ROOT_PASSWORD: 'dvwa_mysql'
+                        MYSQL_DATABASE: 'dvwadb'
+                networks:
+                        - internal
+
+        webapp:
+                container_name: webapp
+                build: ./webapp
+                restart: always
+                volumes:
+                        - ./webapp/src/DVWA-master:/var/www/html
+                depends_on:
+                        - dbms
+                ports:
+                        - "8080:80"
+                networks:
+                        - internal
+                        - external
+
+networks:
+        external:
+                driver: bridge
+        internal:
+                internal: true
